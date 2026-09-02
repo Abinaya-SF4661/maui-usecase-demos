@@ -1,0 +1,540 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:syncChart="clr-namespace:Syncfusion.Maui.Charts;assembly=Syncfusion.Maui.Charts"
+    x:Class="TaskManagement.Pages.DashboardPage"
+    BackgroundColor="#F5F7FA">
+
+    <ScrollView>
+
+        <VerticalStackLayout
+            Padding="25"
+            Spacing="20">
+
+            <!-- HEADER -->
+
+            <Grid ColumnDefinitions="*,Auto">
+
+                <VerticalStackLayout>
+
+                    <Label
+                        Text="Dashboard"
+                        FontSize="34"
+                        FontAttributes="Bold"
+                        TextColor="#1E293B"/>
+
+                    <Label
+                        Text="Track projects, tasks and team productivity"
+                        FontSize="14"
+                        TextColor="#64748B"/>
+
+                </VerticalStackLayout>
+
+                <Button
+                    Grid.Column="1"
+                    VerticalOptions="Center"
+                    WidthRequest="120"
+                    HeightRequest="45"
+                    Text="Refresh"
+                    CornerRadius="10"
+                    TextColor="White"
+                    Command="{Binding RefreshCommand}"
+                    BackgroundColor="#2563EB"/>
+
+            </Grid>
+
+            <!-- KPI CARDS -->
+
+            <Grid IsVisible="{OnIdiom Phone=False, Tablet=True, Desktop=True}"
+                  ColumnDefinitions="*,*,*,*"
+                  ColumnSpacing="15">
+
+                <!-- TOTAL -->
+
+                <Frame
+                    Grid.Column="0"
+                    Padding="18"
+                    CornerRadius="15"
+                    BackgroundColor="White"
+                    BorderColor="#E5E7EB">
+
+                    <VerticalStackLayout Spacing="8">
+
+                        <Label
+                            Text="📋 Total Tasks"
+                            FontSize="14"
+                            TextColor="#64748B"/>
+
+                        <Label
+                            Text="{Binding TotalTasks}"
+                            FontSize="30"
+                            TextColor="#64748B"
+                            FontAttributes="Bold"/>
+
+                    </VerticalStackLayout>
+
+                </Frame>
+
+                <!-- COMPLETED -->
+
+                <Frame
+                    Grid.Column="1"
+                    Padding="18"
+                    CornerRadius="15"
+                    BackgroundColor="White"
+                    BorderColor="#E5E7EB">
+
+                    <VerticalStackLayout>
+
+                        <Label
+                            Text="✅ Completed"
+                            FontSize="14"
+                            TextColor="#10B981"/>
+
+                        <Label
+                            Text="{Binding CompletedTasks}"
+                            FontSize="30"
+                            TextColor="#10B981"
+                            FontAttributes="Bold"/>
+
+                    </VerticalStackLayout>
+
+                </Frame>
+
+                <!-- PROGRESS -->
+
+                <Frame
+                    Grid.Column="2"
+                    Padding="18"
+                    CornerRadius="15"
+                    BackgroundColor="White"
+                    BorderColor="#E5E7EB">
+
+                    <VerticalStackLayout>
+
+                        <Label
+                            Text="🚀 In Progress"
+                            FontSize="14"
+                            TextColor="#2563EB"/>
+
+                        <Label
+                            Text="{Binding InProgressTasks}"
+                            FontSize="30"
+                            FontAttributes="Bold"
+                            TextColor="#2563EB"/>
+
+                    </VerticalStackLayout>
+
+                </Frame>
+
+                <!-- OVERDUE -->
+
+                <Frame
+                    Grid.Column="3"
+                    Padding="18"
+                    CornerRadius="15"
+                    BackgroundColor="White"
+                    BorderColor="#E5E7EB">
+
+                    <VerticalStackLayout>
+
+                        <Label
+                            Text="⚠ Overdue"
+                            FontSize="14"
+                            TextColor="#EF4444"/>
+
+                        <Label
+                            Text="{Binding OverdueTasks}"
+                            FontSize="30"
+                            FontAttributes="Bold"
+                            TextColor="#EF4444"/>
+
+                    </VerticalStackLayout>
+
+                </Frame>
+
+            </Grid>
+
+            <Grid IsVisible="{OnIdiom Phone=True, Tablet=False, Desktop=False}"
+                  ColumnDefinitions="*,*"
+                  RowDefinitions="Auto,Auto"
+                  ColumnSpacing="10"
+                  RowSpacing="10">
+
+                <!-- Total -->
+                <Frame Grid.Row="0"
+                       Grid.Column="0"
+                       Padding="12"
+                       HeightRequest="90"
+                       CornerRadius="14"
+                       BorderColor="#E5E7EB"
+                       BackgroundColor="White">
+
+                    <Grid ColumnDefinitions="Auto,*">
+
+                        <Label
+                            Text="📋"
+                            FontSize="18"
+                            VerticalOptions="Center"/>
+
+                        <VerticalStackLayout
+                            Grid.Column="1"
+                            Margin="8,0,0,0"
+                            Spacing="2">
+
+                            <Label
+                                Text="Total Tasks"
+                                FontSize="13"
+                                TextColor="#6B7280"
+                                FontAttributes="Bold"/>
+
+                            <Label
+                                Text="{Binding TotalTasks}"
+                                FontSize="26"
+                                FontAttributes="Bold"
+                                TextColor="#111827"/>
+
+                        </VerticalStackLayout>
+
+                    </Grid>
+
+                </Frame>
+
+                <!-- Completed -->
+                <Frame Grid.Row="0"
+                       Grid.Column="1"
+                       Padding="12"
+                       HeightRequest="90"
+                       CornerRadius="14"
+                       BorderColor="#E5E7EB"
+                       BackgroundColor="White">
+
+                    <Grid ColumnDefinitions="Auto,*">
+
+                        <Label
+                            Text="✅"
+                            FontSize="18"
+                            VerticalOptions="Center"/>
+
+                        <VerticalStackLayout
+                            Grid.Column="1"
+                            Margin="8,0,0,0"
+                            Spacing="2">
+
+                            <Label
+                                Text="Completed Tasks"
+                                FontSize="13"
+                                TextColor="#6B7280"
+                                FontAttributes="Bold"/>
+
+                            <Label
+                                Text="{Binding CompletedTasks}"
+                                FontSize="26"
+                                FontAttributes="Bold"
+                                TextColor="#10B981"/>
+
+                        </VerticalStackLayout>
+
+                    </Grid>
+
+                </Frame>
+
+                <!-- Progress -->
+                <Frame Grid.Row="1"
+                       Grid.Column="0"
+                       Padding="12"
+                       HeightRequest="90"
+                       CornerRadius="14"
+                       BorderColor="#E5E7EB"
+                       BackgroundColor="White">
+
+                    <Grid ColumnDefinitions="Auto,*">
+
+                        <Label
+                            Text="🚀"
+                            FontSize="18"
+                            VerticalOptions="Center"/>
+
+                        <VerticalStackLayout
+                            Grid.Column="1"
+                            Margin="8,0,0,0"
+                            Spacing="2">
+
+                            <Label
+                                Text="In Progress"
+                                FontSize="13"
+                                TextColor="#6B7280"
+                                FontAttributes="Bold"/>
+
+                            <Label
+                                Text="{Binding InProgressTasks}"
+                                FontSize="26"
+                                FontAttributes="Bold"
+                                TextColor="#2563EB"/>
+
+                        </VerticalStackLayout>
+
+                    </Grid>
+
+                </Frame>
+
+                <!-- Overdue -->
+                <Frame Grid.Row="1"
+                       Grid.Column="1"
+                       Padding="12"
+                       HeightRequest="90"
+                       CornerRadius="14"
+                       BorderColor="#E5E7EB"
+                       BackgroundColor="White">
+
+                    <Grid ColumnDefinitions="Auto,*">
+
+                        <Label
+                            Text="⚠️"
+                            FontSize="18"
+                            VerticalOptions="Center"/>
+
+                        <VerticalStackLayout
+                            Grid.Column="1"
+                            Margin="8,0,0,0"
+                            Spacing="2">
+
+                            <Label
+                                Text="Overdue Tasks"
+                                FontSize="13"
+                                TextColor="#6B7280"
+                                FontAttributes="Bold"/>
+
+                            <Label
+                                Text="{Binding OverdueTasks}"
+                                FontSize="26"
+                                FontAttributes="Bold"
+                                TextColor="#EF4444"/>
+
+                        </VerticalStackLayout>
+
+                    </Grid>
+
+                </Frame>
+
+            </Grid>
+
+            <!-- PIE CHARTS -->
+
+            <Grid IsVisible="{OnIdiom Phone=False, Tablet=True, Desktop=True}"
+                  ColumnDefinitions="*,*"
+                  ColumnSpacing="20">
+
+                <!-- STATUS -->
+
+                <Frame
+                    Grid.Column="0"
+                    BackgroundColor="White"
+                    CornerRadius="15"
+                    BorderColor="#E5E7EB">
+
+                    <VerticalStackLayout Padding="15">
+
+                        <Label
+                            Text="Task Status Distribution"
+                            FontSize="18"
+                            FontAttributes="Bold"/>
+
+                        <syncChart:SfCircularChart HeightRequest="350">
+
+                            <syncChart:SfCircularChart.Series>
+
+                                <syncChart:PieSeries
+                                    ItemsSource="{Binding TasksByStatus}"
+                                    XBindingPath="Status"
+                                    YBindingPath="Count"
+                                    EnableAnimation="True"/>
+
+                            </syncChart:SfCircularChart.Series>
+
+                        </syncChart:SfCircularChart>
+
+                    </VerticalStackLayout>
+
+                </Frame>
+
+                <!-- PRIORITY -->
+
+                <Frame
+                    Grid.Column="1"
+                    BackgroundColor="White"
+                    CornerRadius="15"
+                    BorderColor="#E5E7EB">
+
+                    <VerticalStackLayout Padding="15">
+
+                        <Label
+                            Text="Priority Distribution"
+                            FontSize="18"
+                            FontAttributes="Bold"/>
+
+                        <syncChart:SfCircularChart HeightRequest="350">
+
+                            <syncChart:SfCircularChart.Series>
+
+                                <syncChart:DoughnutSeries
+                                    ItemsSource="{Binding TasksByPriority}"
+                                    XBindingPath="Priority"
+                                    YBindingPath="Count"
+                                    EnableAnimation="True"/>
+
+                            </syncChart:SfCircularChart.Series>
+
+                        </syncChart:SfCircularChart>
+
+                    </VerticalStackLayout>
+
+                </Frame>
+
+            </Grid>
+
+            <VerticalStackLayout
+                IsVisible="{OnIdiom Phone=True, Tablet=False, Desktop=False}"
+                Spacing="15">
+
+                <!-- Status Chart -->
+                <Frame
+                    BackgroundColor="White"
+                    CornerRadius="15"
+                    BorderColor="#E5E7EB">
+
+                    <VerticalStackLayout Padding="15">
+
+                        <Label Text="Task Status Distribution"
+                               FontAttributes="Bold"
+                               FontSize="18"/>
+
+                        <syncChart:SfCircularChart HeightRequest="220">
+
+                            <syncChart:SfCircularChart.Series>
+                                <syncChart:PieSeries
+                                    ItemsSource="{Binding TasksByStatus}"
+                                    XBindingPath="Status"
+                                    YBindingPath="Count"/>
+                            </syncChart:SfCircularChart.Series>
+
+                        </syncChart:SfCircularChart>
+
+                    </VerticalStackLayout>
+
+                </Frame>
+
+                <!-- Priority Chart -->
+                <Frame
+                    BackgroundColor="White"
+                    CornerRadius="15"
+                    BorderColor="#E5E7EB">
+
+                    <VerticalStackLayout Padding="15">
+
+                        <Label Text="Priority Distribution"
+                               FontAttributes="Bold"
+                               FontSize="18"/>
+
+                        <syncChart:SfCircularChart HeightRequest="220">
+
+                            <syncChart:SfCircularChart.Series>
+                                <syncChart:DoughnutSeries
+                                    ItemsSource="{Binding TasksByPriority}"
+                                    XBindingPath="Priority"
+                                    YBindingPath="Count"/>
+                            </syncChart:SfCircularChart.Series>
+
+                        </syncChart:SfCircularChart>
+
+                    </VerticalStackLayout>
+
+                </Frame>
+
+            </VerticalStackLayout>
+
+            <!-- PROJECT PROGRESS -->
+
+            <Frame
+                BackgroundColor="White"
+                CornerRadius="15"
+                BorderColor="#E5E7EB">
+
+                <VerticalStackLayout Padding="15">
+
+                    <Label
+                        Text="Project Progress"
+                        FontSize="18"
+                        FontAttributes="Bold"/>
+
+                    <syncChart:SfCartesianChart HeightRequest="350">
+
+                        <syncChart:SfCartesianChart.XAxes>
+                            <syncChart:CategoryAxis/>
+                        </syncChart:SfCartesianChart.XAxes>
+
+                        <syncChart:SfCartesianChart.YAxes>
+                            <syncChart:NumericalAxis/>
+                        </syncChart:SfCartesianChart.YAxes>
+
+                        <syncChart:SfCartesianChart.Series>
+
+                            <syncChart:ColumnSeries
+                                ItemsSource="{Binding ProjectProgress}"
+                                XBindingPath="Project"
+                                YBindingPath="Percentage"/>
+
+                        </syncChart:SfCartesianChart.Series>
+
+                    </syncChart:SfCartesianChart>
+
+                </VerticalStackLayout>
+
+            </Frame>
+
+            <!-- TEAM PERFORMANCE -->
+
+            <Frame
+                BackgroundColor="White"
+                CornerRadius="15"
+                BorderColor="#E5E7EB">
+
+                <VerticalStackLayout Padding="15">
+
+                    <Label
+                        Text="Team Performance"
+                        FontSize="18"
+                        FontAttributes="Bold"/>
+
+                    <syncChart:SfCartesianChart HeightRequest="350">
+
+                        <syncChart:SfCartesianChart.XAxes>
+                            <syncChart:CategoryAxis/>
+                        </syncChart:SfCartesianChart.XAxes>
+
+                        <syncChart:SfCartesianChart.YAxes>
+                            <syncChart:NumericalAxis/>
+                        </syncChart:SfCartesianChart.YAxes>
+
+                        <syncChart:SfCartesianChart.Series>
+
+                            <syncChart:ColumnSeries
+                                ItemsSource="{Binding TeamPerformance}"
+                                XBindingPath="User"
+                                YBindingPath="CompletedTasks"/>
+
+                        </syncChart:SfCartesianChart.Series>
+
+                    </syncChart:SfCartesianChart>
+
+                </VerticalStackLayout>
+
+            </Frame>
+
+        </VerticalStackLayout>
+
+    </ScrollView>
+
+</ContentPage>

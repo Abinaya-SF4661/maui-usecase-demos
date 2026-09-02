@@ -1,0 +1,40 @@
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:LogisticTrackingApp"
+             x:Class="LogisticTrackingApp.Views.SharedHeader"
+             x:Name="HeaderControl">
+
+    <Grid RowDefinitions="Auto,Auto" Padding="0">
+        <!-- Header with Title and Action Buttons -->
+        <Grid Grid.Row="1"
+              ColumnDefinitions="*,Auto,Auto,Auto" 
+              Padding="16,12,16,8">
+            
+            <!-- Title -->
+            <Label 
+                Text="{Binding Title, Source={x:Reference HeaderControl}}"
+                FontSize="30"
+                FontAttributes="Bold"
+                VerticalTextAlignment="Center"/>
+            
+            <!-- Theme Toggle Button (Common for All Pages) -->
+            <Button Grid.Column="2" 
+                    x:Name="ThemeToggleButton"
+                    Text="🌙" 
+                    BackgroundColor="Transparent"
+                    BorderWidth="0"
+                    FontSize="20"
+                    Padding="8"
+                    Clicked="OnThemeToggleClicked"/>
+            
+            <!-- Notification Button -->
+            <Button Grid.Column="3" 
+                    Text="🔔" 
+                    BackgroundColor="Transparent"
+                    BorderWidth="0"
+                    FontSize="20"
+                    Padding="8"/>
+            
+        </Grid>
+    </Grid>
+</ContentView>

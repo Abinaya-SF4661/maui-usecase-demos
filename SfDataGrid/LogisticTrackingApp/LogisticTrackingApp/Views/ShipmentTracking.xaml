@@ -1,0 +1,197 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:syncfusion="clr-namespace:Syncfusion.Maui.DataGrid;assembly=Syncfusion.Maui.DataGrid"
+             xmlns:core="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
+             xmlns:local="clr-namespace:LogisticTrackingApp"
+             xmlns:converter="clr-namespace:LogisticTrackingApp.Converters"
+             xmlns:views="clr-namespace:LogisticTrackingApp.Views"
+             x:Class="LogisticTrackingApp.Views.ShipmentTracking"
+             Title="Logistics Tracker">
+
+    <ContentPage.Resources>
+        <ResourceDictionary >
+            <DataTemplate x:Key="inTransit" x:DataType="local:Shipment">
+                <Border Padding="12,6"
+                        HeightRequest="30"
+                        HorizontalOptions="Center"
+                        StrokeShape="RoundRectangle 15"
+                        BackgroundColor="{DynamicResource TransitTemplateBackground}"
+                        Stroke="{DynamicResource TransitTemplateBorder}">
+
+                    <HorizontalStackLayout Spacing="6">
+                        <!-- Status Dot -->
+                        <Ellipse
+                        WidthRequest="8"
+                        HeightRequest="8"
+                        VerticalOptions="Center"
+                        Fill="{DynamicResource TransitTextColor}" />
+                        <!-- Status Text -->
+                        <Label FontSize="13"
+                               VerticalOptions="Center"
+                               Text="{Binding Status}"
+                               TextColor="{DynamicResource TransitTextColor}" />
+                    </HorizontalStackLayout>
+                </Border>
+            </DataTemplate>
+
+            <DataTemplate x:Key="delivery" x:DataType="local:Shipment">
+                <Border Padding="12,6"
+                        HeightRequest="30"
+                        HorizontalOptions="Center"
+                        StrokeShape="RoundRectangle 15"
+                        BackgroundColor="{DynamicResource DelayedTemplateBackground}"
+                        Stroke="{DynamicResource DelayedTemplateBorder}">
+
+                    <HorizontalStackLayout Spacing="6">
+                        <!-- Status Dot -->
+                        <Ellipse WidthRequest="8"
+                                 HeightRequest="8"
+                                 VerticalOptions="Center"
+                                 Fill="{DynamicResource DelayedTextColor}" />
+                        <!-- Status Text -->
+                        <Label FontSize="13"
+                               VerticalOptions="Center"
+                               Text="{Binding Status}"
+                               TextColor="{DynamicResource DelayedTextColor}" />
+                    </HorizontalStackLayout>
+                </Border>
+            </DataTemplate>
+
+            <DataTemplate x:Key="Delayed" x:DataType="local:Shipment">
+                <Border Padding="12,6"
+                        HeightRequest="30"
+                        HorizontalOptions="Center"
+                        StrokeShape="RoundRectangle 15"
+                        BackgroundColor="{DynamicResource DeliveredTemplateBackground}"
+                        Stroke="{DynamicResource DeliveredTemplateBorder}">
+
+                    <HorizontalStackLayout Spacing="6">
+                        <!-- Status Dot -->
+                        <Ellipse
+                                WidthRequest="8"
+                                HeightRequest="8"
+                                VerticalOptions="Center"
+                                Fill="{DynamicResource DeliveredTextColor}" />
+                        <!-- Status Text -->
+                        <Label FontSize="13"
+                               VerticalOptions="Center"
+                               Text="{Binding Status}"
+                               TextColor="{DynamicResource DeliveredTextColor}" />
+                    </HorizontalStackLayout>
+                </Border>
+            </DataTemplate>
+
+        </ResourceDictionary>
+
+        <Style TargetType="syncfusion:DataGridHeaderCell">
+            <Setter Property="FontFamily" Value="Roboto-Medium" />
+        </Style>
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto,Auto,*" 
+          RowSpacing="5"
+          Padding="0">
+
+        <!-- Search Bar -->
+        <Border Grid.Row="0"
+                StrokeShape="RoundRectangle 12"
+                Stroke="#e4e9ed"
+                Padding="0"
+                HorizontalOptions="{OnPlatform WinUI=End, MacCatalyst=End, Android=Center, iOS=Center}"
+                HeightRequest="40"
+                WidthRequest="400">
+            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8" Padding="12,8" >
+                <Label 
+                    Text="🔍" 
+                    FontSize="16"
+                    VerticalTextAlignment="Center"/>
+                <Entry 
+                    Grid.Column="1"
+                    x:DataType="local:ShipmentViewModel"
+                    Placeholder="Search shipments, IDs, customers..."
+                    Text="{Binding SearchText}"
+                    BackgroundColor="Transparent"
+                    HorizontalOptions="Fill"
+                    HeightRequest="40"
+                    FontSize="14"
+                    PlaceholderColor="#a8adb5"/>
+            </Grid>
+        </Border>
+
+        <!-- Status Filter Chips -->
+        <core:SfChipGroup x:Name="statusChipGroup"
+                          Grid.Row="1" 
+                          Margin="16,0,16,10"
+                          ChipType="Choice"
+                          ChipPadding="10,8,0,0"
+                          SelectionChanged="SfChipGroup_SelectionChanged">
+            <core:SfChipGroup.Items>
+                <core:SfChip Text="All" WidthRequest="60" CornerRadius="25"/>
+                <core:SfChip Text="In Transit" CornerRadius="25"/>
+                <core:SfChip Text="Delivered" CornerRadius="25"/>
+                <core:SfChip Text="Delayed" CornerRadius="25"/>
+            </core:SfChipGroup.Items>
+        </core:SfChipGroup>
+        
+
+        <!-- DataGrid -->
+        <Border Grid.Row="2" 
+                Margin="16,0,16,16"
+                StrokeThickness="1"
+                StrokeShape="RoundRectangle 10">
+
+            <Grid>
+                <!-- DataGrid -->
+                <syncfusion:SfDataGrid x:Name="ShipmentsDataGrid"
+                                       x:DataType="local:ShipmentViewModel"
+                                       ItemsSource="{Binding FilteredShipments}"
+                                       SelectionMode="Single"
+                                       RowHeight="55"
+                                       HeaderRowHeight="45"
+                                       GridLinesVisibility="Horizontal"
+                                       AutoGenerateColumnsMode="None"
+                                       ColumnWidthMode="{OnPlatform Android=None, WinUI=Fill, MacCatalyst=Fill, iOS=None}"
+                                       EmptyView="Sorry... No shipments📦"
+                                       HeaderGridLinesVisibility="Horizontal"
+                                       SelectionChanged="ShipmentsDataGrid_SelectionChanged">
+
+                    <syncfusion:SfDataGrid.DefaultStyle>
+                        <syncfusion:DataGridStyle GridLineStrokeThickness="0.5" 
+                                                  HeaderGridLineStrokeThickness="1"
+                                                  HeaderRowBackground="{DynamicResource ThemeHeaderRowColor}"/>
+                    </syncfusion:SfDataGrid.DefaultStyle>
+
+                    <syncfusion:SfDataGrid.Columns>
+                        <syncfusion:DataGridTextColumn MappingName="TrackingId" 
+                                               HeaderText="Tracking ID"
+                                                       LineBreakMode="NoWrap"/>
+                        <syncfusion:DataGridTextColumn MappingName="CustomerName" 
+                                               HeaderText="Customer"
+                                                       LineBreakMode="NoWrap"/>
+                        <syncfusion:DataGridTemplateColumn MappingName="Status"
+                                                           HeaderText="Status"
+                                                           LineBreakMode="NoWrap">
+                            <syncfusion:DataGridTemplateColumn.CellTemplate>
+                                <converter:StatusTemplateSelector InTransit="{StaticResource inTransit}"
+                                                                   Delivery="{StaticResource delivery}"
+                                                                   Delayed="{StaticResource Delayed}" />
+                            </syncfusion:DataGridTemplateColumn.CellTemplate>
+                        </syncfusion:DataGridTemplateColumn>
+                        
+                        <syncfusion:DataGridTextColumn MappingName="Origin" 
+                                               HeaderText="Origin"
+                                                       LineBreakMode="NoWrap"/>
+                        <syncfusion:DataGridTextColumn MappingName="Destination" 
+                                               HeaderText="Destination"
+                                                       LineBreakMode="NoWrap"/>
+                        
+                        <syncfusion:DataGridDateColumn MappingName="Eta" 
+                                                       HeaderText="ETA"
+                                                       LineBreakMode="NoWrap"/>
+                    </syncfusion:SfDataGrid.Columns>
+                    
+                </syncfusion:SfDataGrid>
+            </Grid>
+        </Border>
+    </Grid>
+</ContentPage>
