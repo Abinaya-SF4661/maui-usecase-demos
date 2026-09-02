@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:syncKanban="clr-namespace:Syncfusion.Maui.Kanban;assembly=Syncfusion.Maui.Kanban"
+    xmlns:syncInput="clr-namespace:Syncfusion.Maui.Inputs;assembly=Syncfusion.Maui.Inputs"
+    x:Class="TaskManagement.Pages.KanbanBoardPage"
+    BackgroundColor="#F5F7FA">
+
+    <Grid
+        Padding="20"
+        RowDefinitions="Auto,Auto,*"
+        RowSpacing="12">
+
+        <!-- HEADER -->
+
+        <Grid
+            Grid.Row="0"
+            ColumnDefinitions="*,Auto">
+
+            <VerticalStackLayout>
+
+                <Label
+                    Text="Kanban Board"
+                    FontSize="30"
+                    FontAttributes="Bold"
+                    TextColor="#1E293B"/>
+
+                <Label
+                    Text="Visualize and manage task workflow"
+                    FontSize="14"
+                    TextColor="#64748B"/>
+
+            </VerticalStackLayout>
+
+
+            <Button
+                Grid.Column="1"
+                Text="↻ Refresh"
+                Command="{Binding RefreshCommand}"
+                WidthRequest="110"
+                HeightRequest="42"
+                CornerRadius="10"
+                BackgroundColor="#2563EB"
+                TextColor="White"/>
+
+
+        </Grid>
+
+        <!-- SEARCH & FILTERS -->
+
+        <Frame
+            Grid.Row="1"
+            CornerRadius="14"
+            Padding="15"
+            BackgroundColor="White"
+            BorderColor="#E5E7EB">
+
+            <VerticalStackLayout Spacing="10">
+
+                <Entry
+                    Text="{Binding SearchText}"
+                    Placeholder="Search by title or assignee"
+                    TextColor="Black"
+                    HeightRequest="44"/>
+
+                <Grid
+                    ColumnDefinitions="*,*"
+                    ColumnSpacing="10">
+
+
+                    <syncInput:SfComboBox
+                        Grid.Column="0"
+                        ItemsSource="{Binding Priorities}"
+                        SelectedItem="{Binding SelectedPriority, Mode=TwoWay}"
+                        Placeholder="Priority"/>
+
+
+
+                    <syncInput:SfComboBox
+                        Grid.Column="1"
+                        ItemsSource="{Binding AssignedUsers}"
+                        SelectedItem="{Binding SelectedUser, Mode=TwoWay}"
+                        Placeholder="Assigned User"/>
+
+
+                </Grid>
+
+            </VerticalStackLayout>
+
+        </Frame>
+
+        <!-- KANBAN -->
+
+        <Frame
+            Grid.Row="2"
+            Padding="10"
+            CornerRadius="16"
+            BackgroundColor="White"
+            BorderColor="#E5E7EB">
+
+            <syncKanban:SfKanban
+                ItemsSource="{Binding Tasks}"
+                ColumnMappingPath="Status"
+                AutoGenerateColumns="False">
+
+                <syncKanban:SfKanban.Columns>
+
+                    <syncKanban:KanbanColumn
+                        Title="📝 To Do"
+                        Categories="To Do"/>
+
+                    <syncKanban:KanbanColumn
+                        Title="🚀 In Progress"
+                        Categories="In Progress"/>
+
+                    <syncKanban:KanbanColumn
+                        Title="🔍 Review"
+                        Categories="Review"/>
+
+                    <syncKanban:KanbanColumn
+                        Title="✅ Done"
+                        Categories="Done"/>
+
+                </syncKanban:SfKanban.Columns>
+
+                <!-- TASK CARD -->
+
+                <syncKanban:SfKanban.CardTemplate>
+
+                    <DataTemplate>
+
+                        <Frame
+                            Margin="6"
+                            Padding="12"
+                            CornerRadius="12"
+                            BorderColor="#E5E7EB"
+                            BackgroundColor="White"
+                            MinimumHeightRequest="120">
+
+                            <VerticalStackLayout Spacing="8">
+
+                                <!-- Title -->
+
+                                <Label
+                                    Text="{Binding Title}"
+                                    FontSize="14"
+                                    FontAttributes="Bold"
+                                    TextColor="#1E293B"
+                                    LineBreakMode="WordWrap"/>
+
+                                <!-- Project -->
+
+                                <Label
+                                    Text="{Binding ProjectName}"
+                                    FontSize="11"
+                                    TextColor="#64748B"/>
+
+                                <!-- Priority Badge -->
+
+                                <Border
+                                    BackgroundColor="#DBEAFE"
+                                    Padding="6,2"
+                                    HorizontalOptions="Start"
+                                    StrokeThickness="0">
+
+                                    <Label
+                                        Text="{Binding Priority}"
+                                        FontSize="11"
+                                        TextColor="#2563EB"/>
+
+                                </Border>
+
+                                <!-- Assignee -->
+
+                                <Grid ColumnDefinitions="Auto,*">
+
+                                    <Label
+                                        Text="👤"
+                                        FontSize="12"/>
+
+                                    <Label
+                                        Grid.Column="1"
+                                        Text="{Binding AssignedUser}"
+                                        FontSize="11"/>
+
+                                </Grid>
+
+                                <!-- Due Date -->
+
+                                <Grid ColumnDefinitions="Auto,*">
+
+                                    <Label
+                                        Text="📅"
+                                        FontSize="12"/>
+
+                                    <Label
+                                        Grid.Column="1"
+                                        Text="{Binding DueDate, StringFormat='{0:dd MMM yyyy}'}"
+                                        FontSize="11"/>
+
+                                </Grid>
+
+                                <!-- Progress -->
+
+
+                                <ProgressBar
+                                    HeightRequest="6"
+                                    ProgressColor="#2563EB"
+                                    Progress="{Binding CompletionPercentage,
+                       Converter={StaticResource PercentConverter}}"/>
+
+
+                            </VerticalStackLayout>
+
+                        </Frame>
+
+                    </DataTemplate>
+
+                </syncKanban:SfKanban.CardTemplate>
+
+            </syncKanban:SfKanban>
+
+        </Frame>
+
+    </Grid>
+
+</ContentPage>

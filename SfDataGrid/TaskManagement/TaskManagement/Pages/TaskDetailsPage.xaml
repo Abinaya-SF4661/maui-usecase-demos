@@ -1,0 +1,486 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:TaskManagement.Pages"
+    xmlns:syncInput="clr-namespace:Syncfusion.Maui.Inputs;assembly=Syncfusion.Maui.Inputs"
+    xmlns:editors="clr-namespace:Syncfusion.Maui.Picker;assembly=Syncfusion.Maui.Picker"
+    x:Class="TaskManagement.Pages.TaskDetailsPage"
+    Title="Task Details"
+    BackgroundColor="#F5F7FA">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <local:TaskDetailsPagePercentConverter
+            x:Key="PercentConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="*,Auto">
+
+        <ScrollView>
+
+            <VerticalStackLayout
+                Padding="20"
+                Spacing="16">
+
+                <!-- Task Information -->
+
+                <Frame
+                    CornerRadius="16"
+                    Padding="18"
+                    BackgroundColor="White"
+                    BorderColor="#E5E7EB">
+
+                    <VerticalStackLayout Spacing="12">
+
+                        <Label
+                            Text="Task Information"
+                            TextColor="Black"
+                            FontSize="20"
+                            FontAttributes="Bold"/>
+
+                        <Label
+                            Text="Task Title"
+                            TextColor="Black"
+                            FontAttributes="Bold"/>
+
+                        <Entry
+                            Text="{Binding Task.Title}"
+                            TextColor="Black"
+                            Placeholder="Enter task title"/>
+
+                        <Label
+                            Text="Description"
+                            TextColor="Black"
+                            FontAttributes="Bold"/>
+
+                        <Editor
+                            Text="{Binding Task.Description}"
+                            Placeholder="Enter task description"
+                            TextColor="Black"
+                            AutoSize="TextChanges"
+                            HeightRequest="120"/>
+
+                    </VerticalStackLayout>
+
+                </Frame>
+
+                <!-- Project & Assignment -->
+
+                <Frame
+                    CornerRadius="16"
+                    Padding="18"
+                    BackgroundColor="White"
+                    BorderColor="#E5E7EB">
+
+                    <VerticalStackLayout Spacing="12">
+
+                        <Label
+                            Text="Project &amp; Assignment"
+                            TextColor="Black"
+                            FontSize="20"
+                            FontAttributes="Bold"/>
+
+                        <syncInput:SfComboBox
+                            ItemsSource="{Binding Source={x:Static local:StaticData.Projects}}"
+                            SelectedItem="{Binding Task.ProjectName}"
+                            Placeholder="Select Project"/>
+
+                        <syncInput:SfComboBox
+                            ItemsSource="{Binding Source={x:Static local:StaticData.Users}}"
+                            SelectedItem="{Binding Task.AssignedUser}"
+                            Placeholder="Assigned User"/>
+
+                        <syncInput:SfComboBox
+                            ItemsSource="{Binding Source={x:Static local:StaticData.Teams}}"
+                            SelectedItem="{Binding Task.Team}"
+                            Placeholder="Select Team"/>
+
+                    </VerticalStackLayout>
+
+                </Frame>
+
+                <!-- Status & Priority -->
+
+                <Frame
+                    CornerRadius="16"
+                    Padding="18"
+                    BackgroundColor="White"
+                    BorderColor="#E5E7EB">
+
+                    <VerticalStackLayout Spacing="12">
+
+                        <Label
+                            Text="Status &amp; Priority"
+                            TextColor="Black"
+                            FontSize="20"
+                            FontAttributes="Bold"/>
+
+                        <Grid
+                            ColumnDefinitions="*,*"
+                            ColumnSpacing="12">
+
+                            <syncInput:SfComboBox
+                                Grid.Column="0"
+                                ItemsSource="{Binding Source={x:Static local:StaticData.Statuses}}"
+                                SelectedItem="{Binding SelectedStatus}"
+                                Placeholder="Status"/>
+
+                            <syncInput:SfComboBox
+                                Grid.Column="1"
+                                ItemsSource="{Binding Source={x:Static local:StaticData.Priorities}}"
+                                SelectedItem="{Binding SelectedPriority}"
+                                Placeholder="Priority"/>
+
+                        </Grid>
+
+                    </VerticalStackLayout>
+
+                </Frame>
+
+                <!-- Schedule & Effort -->
+
+                <Frame
+                    CornerRadius="16"
+                    Padding="18"
+                    BackgroundColor="White"
+                    BorderColor="#E5E7EB">
+
+                    <VerticalStackLayout Spacing="15">
+
+                        <Label
+                            Text="Schedule &amp; Effort"
+                            TextColor="Black"
+                            FontSize="20"
+                            FontAttributes="Bold"/>
+
+                        <!-- Dates -->
+
+                        <Grid
+                            ColumnDefinitions="*,*"
+                            ColumnSpacing="12">
+
+                            <VerticalStackLayout>
+
+                                <Label
+                                    Text="Start Date"
+                                    TextColor="Black"
+                                    FontAttributes="Bold"/>
+
+                                <Button
+                                    Text="{Binding StartDateDisplay}"
+                                    Command="{Binding EnableScheduleEditCommand}"
+                                    BackgroundColor="#F1F5F9"
+                                    TextColor="#1E293B"/>
+                            </VerticalStackLayout>
+
+                            <VerticalStackLayout Grid.Column="1">
+
+                                <Label
+                                    Text="Due Date"
+                                    TextColor="Black"
+                                    FontAttributes="Bold"/>
+
+                                <Button
+                                    Text="{Binding DueDateDisplay}"
+                                    Command="{Binding EnableScheduleEditCommand}"
+                                    BackgroundColor="#F1F5F9"
+                                    TextColor="#1E293B"/>
+                            </VerticalStackLayout>
+
+                        </Grid>
+
+                        <!-- Hidden until edit mode -->
+
+                        <Grid
+                            IsVisible="{Binding IsScheduleEditing}"
+                            ColumnDefinitions="*,*"
+                            ColumnSpacing="12">
+
+                            <editors:SfDatePicker
+                                SelectedDate="{Binding Task.StartDate, Mode=TwoWay}"/>
+
+                            <editors:SfDatePicker
+                                Grid.Column="1"
+                                SelectedDate="{Binding Task.DueDate, Mode=TwoWay}"/>
+
+                        </Grid>
+
+                        <Grid
+                            ColumnDefinitions="*,*"
+                            ColumnSpacing="10">
+
+                            <Button
+                                Text="{Binding ScheduleButtonText}"
+                                Command="{Binding ApplyScheduleCommand}"
+                                HeightRequest="45"
+                                CornerRadius="10"
+                                BackgroundColor="#2563EB"
+                                TextColor="White"/>
+
+                            <Button
+                                Grid.Column="1"
+                                Text="Cancel"
+                                Command="{Binding CancelScheduleEditCommand}"
+                                IsVisible="{Binding IsScheduleEditing}"
+                                HeightRequest="45"
+                                CornerRadius="10"
+                                BackgroundColor="#64748B"
+                                TextColor="White"/>
+
+                        </Grid>
+
+                        <Label
+                            Text="Estimated Hours"
+                            TextColor="Black"
+                            FontAttributes="Bold"/>
+
+                        <Entry
+                            Text="{Binding Task.EstimatedHours}"
+                            TextColor="Black"
+                            Keyboard="Numeric"
+                            Placeholder="Estimated hours"/>
+
+                        <Label
+                            Text="Actual Hours"
+                            TextColor="Black"
+                            FontAttributes="Bold"/>
+
+
+                        <Entry
+                            Text="{Binding Task.ActualHours}"
+                            TextColor="Black"
+                            Keyboard="Numeric"
+                            Placeholder="Actual hours"/>
+
+                    </VerticalStackLayout>
+
+                </Frame>
+
+                <!-- Schedule Overview -->
+                <Frame
+                    CornerRadius="16"
+                    Padding="20"
+                    BackgroundColor="#EFF6FF"
+                    BorderColor="#BFDBFE">
+
+                    <VerticalStackLayout Spacing="14">
+
+                        <Label
+                            Text="Schedule Overview"
+                            FontAttributes="Bold"
+                            FontSize="20"
+                            TextColor="#1D4ED8"/>
+
+                        <Grid ColumnDefinitions="Auto,*">
+                            <Label Text="📅"/>
+                            <Label
+                                Grid.Column="1"
+                                TextColor="Black"
+                                Text="{Binding StartDateDisplay}"/>
+                        </Grid>
+
+                        <Grid ColumnDefinitions="Auto,*">
+                            <Label Text="🏁"/>
+                            <Label
+                                Grid.Column="1"
+                                TextColor="Black"
+                                Text="{Binding DueDateDisplay}"/>
+                        </Grid>
+
+                        <Grid ColumnDefinitions="Auto,*">
+                            <Label Text="⏳"/>
+                            <Label
+                                Grid.Column="1"
+                                TextColor="Black"
+                                Text="{Binding DurationText}"/>
+                        </Grid>
+
+                        <Grid ColumnDefinitions="Auto,*">
+                            <Label Text="📊"/>
+                            <Label
+                                Grid.Column="1"
+                                TextColor="Black"
+                                Text="{Binding ScheduleCategory}"/>
+                        </Grid>
+
+                        <Grid ColumnDefinitions="Auto,*">
+                            <Label Text="🚨"/>
+                            <Label
+                                Grid.Column="1"
+                                Text="{Binding DueStatus}"
+                                FontAttributes="Bold"
+                                TextColor="{Binding DueStatusColor}"/>
+                        </Grid>
+
+                    </VerticalStackLayout>
+
+                </Frame>
+
+
+                <Frame
+                    CornerRadius="16"
+                    Padding="18"
+                    BackgroundColor="#FFFFFF"
+                    BorderColor="#E5E7EB">
+
+                    <VerticalStackLayout Spacing="12">
+
+                        <Label
+                            Text="Task Health"
+                            TextColor="Black"
+                            FontSize="20"
+                            FontAttributes="Bold"/>
+
+                        <Grid ColumnDefinitions="*,*,*">
+
+                            <VerticalStackLayout>
+                                <Label
+                                    Text="{Binding Task.EstimatedHours}"
+                                    FontSize="28"
+                                    FontAttributes="Bold"
+                                    TextColor="Black"
+                                    HorizontalOptions="Center"/>
+
+                                <Label
+                                    Text="Estimated"
+                                    TextColor="Black"
+                                    HorizontalOptions="Center"/>
+                            </VerticalStackLayout>
+
+                            <VerticalStackLayout Grid.Column="1">
+                                <Label
+                                    Text="{Binding Task.ActualHours}"
+                                    TextColor="Black"
+                                    FontSize="28"
+                                    FontAttributes="Bold"
+                                    HorizontalOptions="Center"/>
+
+                                <Label
+                                    Text="Actual"
+                                    TextColor="Black"
+                                    HorizontalOptions="Center"/>
+                            </VerticalStackLayout>
+
+                            <VerticalStackLayout Grid.Column="2">
+                                <Label
+                                    Text="{Binding Task.CompletionPercentage,
+                       StringFormat='{0}%'}"
+                                    FontSize="28"
+                                    FontAttributes="Bold"
+                                    TextColor="Black"
+                                    HorizontalOptions="Center"/>
+
+                                <Label
+                                    Text="Completed"
+                                    TextColor="Black"
+                                    HorizontalOptions="Center"/>
+                            </VerticalStackLayout>
+
+                        </Grid>
+
+                        <Label
+                            Text="{Binding Task.TaskHealth}"
+                            FontSize="18"
+                            FontAttributes="Bold"
+                            HorizontalOptions="Center"
+                            TextColor="#2563EB"/>
+
+                        <Frame
+                            Padding="0"
+                            CornerRadius="10"
+                            BackgroundColor="#E5E7EB"
+                            HasShadow="False">
+
+                            <ProgressBar
+                                HeightRequest="12"
+                                Progress="{Binding Task.CompletionPercentage,
+                              Converter={StaticResource PercentConverter}}"
+                                ProgressColor="#10B981"/>
+                        </Frame>
+
+                    </VerticalStackLayout>
+
+                </Frame>
+
+                <!-- Metadata -->
+
+                <Frame
+                    CornerRadius="16"
+                    Padding="18"
+                    BackgroundColor="White"
+                    BorderColor="#E5E7EB">
+
+                    <VerticalStackLayout Spacing="12">
+
+                        <Label
+                            Text="Metadata"
+                            TextColor="Black"
+                            FontSize="20"
+                            FontAttributes="Bold"/>
+
+                        <Label
+                            Text="Created Date"
+                            TextColor="Black"
+                            FontAttributes="Bold"/>
+
+                        <Entry
+                            IsReadOnly="True"
+                            TextColor="Black"
+                            Text="{Binding Task.CreatedDate,
+                                   StringFormat='{0:dd MMM yyyy hh:mm tt}'}"/>
+
+                        <Label
+                            Text="Last Updated"
+                            TextColor="Black"
+                            FontAttributes="Bold"/>
+
+                        <Entry
+                            IsReadOnly="True"
+                            TextColor="Black"
+                            Text="{Binding Task.UpdatedDate,
+                                   StringFormat='{0:dd MMM yyyy hh:mm tt}'}"/>
+
+                    </VerticalStackLayout>
+
+                </Frame>
+
+            </VerticalStackLayout>
+
+        </ScrollView>
+
+        <!-- Footer Actions -->
+
+        <Grid
+            Grid.Row="1"
+            BackgroundColor="White"
+            Padding="20"
+            ColumnDefinitions="*,*"
+            ColumnSpacing="12">
+
+            <Button
+                Grid.Column="0"
+                Text="Save"
+                HeightRequest="50"
+                CornerRadius="12"
+                BackgroundColor="#10B981"
+                TextColor="White"
+                Command="{Binding SaveTaskCommand}"/>
+
+            <Button
+                Grid.Column="1"
+                Text="Back"
+                HeightRequest="50"
+                CornerRadius="12"
+                BackgroundColor="#64748B"
+                TextColor="White"
+                Command="{Binding GoBackCommand}"/>
+
+        </Grid>
+
+    </Grid>
+
+</ContentPage>
+

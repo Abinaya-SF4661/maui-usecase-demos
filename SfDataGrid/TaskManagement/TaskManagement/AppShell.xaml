@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="TaskManagement.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:TaskManagement"
+    xmlns:pages="clr-namespace:TaskManagement.Pages"
+    Shell.NavBarIsVisible="{OnPlatform Android=True,iOS=True,WinUI=False, MacCatalyst=True}"
+    Title="Task Management">
+
+    <!-- Flyout Header -->
+
+    <Shell.FlyoutHeader>
+
+        <Grid BackgroundColor="#2563EB"
+              HeightRequest="120">
+
+            <VerticalStackLayout
+                Padding="20"
+                VerticalOptions="End">
+
+                <Label
+                    Text="Task Management"
+                    FontSize="24"
+                    FontAttributes="Bold"
+                    TextColor="White"/>
+
+                <Label
+                    Text="Project Dashboard"
+                    TextColor="White"
+                    Opacity="0.8"/>
+
+            </VerticalStackLayout>
+
+        </Grid>
+
+    </Shell.FlyoutHeader>
+
+    <!-- Dashboard -->
+
+    <FlyoutItem Title="📊 Dashboard">
+
+        <ShellContent
+            Route="Dashboard"
+            ContentTemplate="{DataTemplate pages:DashboardPage}" />
+
+    </FlyoutItem>
+
+    <!-- Tasks -->
+
+    <FlyoutItem Title="📋 Tasks">
+
+        <ShellContent
+            Route="Tasks"
+            ContentTemplate="{DataTemplate pages:TaskManagementPage}" />
+
+    </FlyoutItem>
+
+    <!-- Kanban -->
+
+    <FlyoutItem Title="🗂 Kanban Board">
+
+        <ShellContent
+            Route="Kanban"
+            ContentTemplate="{DataTemplate pages:KanbanBoardPage}" />
+
+    </FlyoutItem>
+
+    <!-- Hidden Detail Page -->
+
+    <ShellContent
+        Route="taskdetails"
+        FlyoutItemIsVisible="False"
+        ContentTemplate="{DataTemplate pages:TaskDetailsPage}" />
+
+
+
+</Shell>
+

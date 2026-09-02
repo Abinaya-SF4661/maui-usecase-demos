@@ -1,0 +1,305 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:views="clr-namespace:LogisticTrackingApp.Views"
+             xmlns:progressbar="clr-namespace:Syncfusion.Maui.ProgressBar;assembly=Syncfusion.Maui.ProgressBar"
+             xmlns:local="clr-namespace:LogisticTrackingApp"
+             x:Class="LogisticTrackingApp.Views.ShipmentDetails"
+             Title="Shipment Details">
+    
+    <ContentPage.BindingContext>
+        <local:ShipmentViewModel/>
+    </ContentPage.BindingContext>
+
+    <Grid RowDefinitions="*" 
+          ColumnDefinitions="*"
+          Padding="0">
+
+        <!-- Details Content -->
+        <ScrollView Grid.Row="0" Padding="16" VerticalScrollBarVisibility="Default">
+            <VerticalStackLayout Spacing="16" Padding="0">
+                
+                <!-- Tracking ID and Status Header -->
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
+                    <VerticalStackLayout Spacing="4">
+                        <Label 
+                            Text="TRACKING ID" 
+                            FontSize="12"
+                            TextColor="{DynamicResource HeaderLabelTextColor}"
+                            FontAttributes="Bold"/>
+                        <Label 
+                            Text="{Binding SelectedShipment.TrackingId}" 
+                            TextColor="{DynamicResource ValueLabelTextColor}"
+                            FontSize="20"
+                            FontAttributes="Bold"/>
+                    </VerticalStackLayout>
+                    <Border 
+                        Grid.Column="1"
+                        StrokeShape="RoundRectangle 20"
+                            Background="{DynamicResource ThemePrimaryColor}"
+                        Padding="12,6"
+                        VerticalOptions="Start">
+                        <Label 
+                            Text="{Binding SelectedShipment.Status}" 
+                            TextColor="{DynamicResource ThemeOnPrimaryColor}"
+                            FontSize="12"
+                            FontAttributes="Bold"/>
+                    </Border>
+                </Grid>
+
+                <!-- Responsive Card Grid: Side-by-side on Desktop, Stacked on Mobile -->
+                <Grid ColumnDefinitions="*,*" 
+                      RowDefinitions="Auto,Auto"
+                      ColumnSpacing="12"
+                      RowSpacing="12"
+                      x:Name="DetailsGrid">
+                    
+                    <!-- Card 1: Shipment Summary (Top-Left on Desktop, Full Width on Mobile) -->
+                    <Border x:Name="shipmentCard"
+                        Grid.Row="0" 
+                           Grid.Column="0"
+                           StrokeShape="RoundRectangle 12"
+                           Stroke="#e4e9ed"
+                           Padding="16">
+                        <VerticalStackLayout Spacing="12">
+                            <Label 
+                                Text="Shipment Summary"
+                                TextColor="{DynamicResource ValueLabelTextColor}"
+                                FontSize="16"
+                                FontAttributes="Bold"/>
+                            
+                            <!-- Summary Grid -->
+                            <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" RowSpacing="12" ColumnSpacing="12">
+                                <!-- Customer Name -->
+                                <VerticalStackLayout Spacing="4">
+                                    <Label 
+                                        Text="Customer Name" 
+                                        TextColor="{DynamicResource HeaderLabelTextColor}"
+                                        FontSize="11"
+                                        FontAttributes="Bold"/>
+                                    <Label 
+                                        Text="{Binding SelectedShipment.CustomerName}"
+                                        TextColor="{DynamicResource ValueLabelTextColor}"
+                                        FontSize="14"
+                                        FontAttributes="Bold"/>
+                                </VerticalStackLayout>
+                                
+                                <!-- Service Type -->
+                                <VerticalStackLayout Grid.Column="1" Spacing="4">
+                                    <Label 
+                                        Text="Service Type" 
+                                        TextColor="{DynamicResource HeaderLabelTextColor}"
+                                        FontSize="11"
+                                        FontAttributes="Bold"/>
+                                    <Label 
+                                        Text="{Binding SelectedShipment.ServiceType}" 
+                                        TextColor="{DynamicResource ValueLabelTextColor}"
+                                        FontSize="14"/>
+                                </VerticalStackLayout>
+                                
+                                <!-- Weight -->
+                                <VerticalStackLayout Grid.Row="1" Spacing="4">
+                                    <Label 
+                                        Text="Weight" 
+                                        TextColor="{DynamicResource HeaderLabelTextColor}"
+                                        FontSize="11"
+                                        FontAttributes="Bold"/>
+                                    <Label 
+                                        Text="{Binding SelectedShipment.WeightKg, StringFormat='{0} kg'}"
+                                        TextColor="{DynamicResource ValueLabelTextColor}"
+                                        FontSize="14"/>
+                                </VerticalStackLayout>
+                                
+                                <!-- Priority -->
+                                <VerticalStackLayout Grid.Row="1" Grid.Column="1" Spacing="4">
+                                    <Label 
+                                        Text="Priority" 
+                                        TextColor="{DynamicResource HeaderLabelTextColor}"
+                                        FontSize="11"
+                                        FontAttributes="Bold"/>
+                                    <Label 
+                                        Text="{Binding SelectedShipment.Priority}" 
+                                        TextColor="{DynamicResource ValueLabelTextColor}"
+                                        FontSize="14"/>
+                                </VerticalStackLayout>
+                            </Grid>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- Card 2: Delivery Information (Top-Right on Desktop, Full Width on Mobile) -->
+                    <Border x:Name="deliveryCard"
+                        Grid.Row="0"
+                           Grid.Column="1"
+                           StrokeShape="RoundRectangle 12"
+                           Stroke="#e4e9ed"
+                           Padding="16">
+                        <VerticalStackLayout Spacing="12">
+                            <Label 
+                                Text="Delivery Information" 
+                                TextColor="{DynamicResource ValueLabelTextColor}"
+                                FontSize="16"
+                                FontAttributes="Bold"/>
+                            
+                            <!-- Delivery Grid -->
+                            <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" RowSpacing="12" ColumnSpacing="12">
+                                <!-- ETA -->
+                                <VerticalStackLayout Spacing="4">
+                                    <Label 
+                                        Text="Esitimated Date" 
+                                        TextColor="{DynamicResource HeaderLabelTextColor}"
+                                        FontSize="11"
+                                        FontAttributes="Bold"/>
+                                    <Label 
+                                        Text="{Binding SelectedShipment.Eta}" 
+                                        TextColor="{DynamicResource ValueLabelTextColor}"
+                                        FontSize="14"
+                                        FontAttributes="Bold"/>
+                                </VerticalStackLayout>
+                                
+                                <!-- Delivery Window -->
+                                <VerticalStackLayout Grid.Column="1" Spacing="4">
+                                    <Label 
+                                        Text="Delivery Window" 
+                                        TextColor="{DynamicResource HeaderLabelTextColor}"
+                                        FontSize="11"
+                                        FontAttributes="Bold"/>
+                                    <Label 
+                                        Text="{Binding SelectedShipment.DeliveryWindow}"
+                                        TextColor="{DynamicResource ValueLabelTextColor}" 
+                                        FontSize="14"/>
+                                </VerticalStackLayout>
+                                
+                                <!-- Driver Name -->
+                                <VerticalStackLayout Grid.Row="1" Spacing="4">
+                                    <Label 
+                                        Text="Driver Name" 
+                                        TextColor="{DynamicResource HeaderLabelTextColor}"
+                                        FontSize="11"
+                                        FontAttributes="Bold"/>
+                                    <Label 
+                                        Text="{Binding SelectedShipment.DriverName}" 
+                                        TextColor="{DynamicResource ValueLabelTextColor}"
+                                        FontSize="14"/>
+                                </VerticalStackLayout>
+                                
+                                <!-- Last Updated -->
+                                <VerticalStackLayout Grid.Row="1" Grid.Column="1" Spacing="4">
+                                    <Label 
+                                        Text="Last Update" 
+                                        TextColor="{DynamicResource HeaderLabelTextColor}"
+                                        FontSize="11"
+                                        FontAttributes="Bold"/>
+                                    <Label 
+                                        Text="{Binding SelectedShipment.LastUpdated}" 
+                                        TextColor="{DynamicResource ValueLabelTextColor}"
+                                        FontSize="14"/>
+                                </VerticalStackLayout>
+                            </Grid>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- Card 3: Tarcking Information (Bottom-Left) -->
+                    <Border x:Name="trackingtCard"
+                        Grid.Row="1"
+                           Grid.Column="0"
+                           StrokeShape="RoundRectangle 12"
+                           Stroke="#e4e9ed"
+                           Padding="16">
+                        <Grid RowDefinitions="Auto,*" RowSpacing="12">
+                            <Label Grid.Row="0"
+                                Text="Tracking Information" 
+                                TextColor="{DynamicResource ValueLabelTextColor}"
+                                FontSize="16"
+                                FontAttributes="Bold"/>
+
+                            <progressbar:SfStepProgressBar x:Name="progressBar"
+                                                           Grid.Row="1"
+                                                           LabelSpacing="12"
+                                                           ActiveStepIndex="1"
+                                                           StepSize="20"
+                                                           StepStatusChanged="progressBar_StepStatusChanged"
+                                                           ItemsSource="{Binding StepProgressItem}">
+                                
+                            </progressbar:SfStepProgressBar>
+
+                        </Grid>
+                    </Border>
+
+                    <!-- Card 4: Additional Details (Bottom-Right) -->
+                    <Border x:Name="detailsCard"
+                        Grid.Row="1"
+                           Grid.Column="1"
+                           StrokeShape="RoundRectangle 12"
+                           Stroke="#e4e9ed"
+                           Padding="16">
+                        <VerticalStackLayout Spacing="12">
+                            <Label 
+                                Text="Additional Details" 
+                                TextColor="{DynamicResource ValueLabelTextColor}"
+                                FontSize="16"
+                                FontAttributes="Bold"/>
+                            
+                            <!-- Details Grid -->
+                            <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" RowSpacing="12" ColumnSpacing="12">
+                                <!-- Category -->
+                                <VerticalStackLayout Spacing="4">
+                                    <Label 
+                                        Text="Category" 
+                                        TextColor="{DynamicResource HeaderLabelTextColor}"
+                                        FontSize="11"
+                                        FontAttributes="Bold"/>
+                                    <Label 
+                                        Text="{Binding SelectedShipment.Category}" 
+                                        TextColor="{DynamicResource ValueLabelTextColor}"
+                                        FontSize="14"/>
+                                </VerticalStackLayout>
+                                
+                                <!-- Shipment Value -->
+                                <VerticalStackLayout Grid.Column="1" Spacing="4">
+                                    <Label 
+                                        Text="Value" 
+                                        TextColor="{DynamicResource HeaderLabelTextColor}"
+                                        FontSize="11"
+                                        FontAttributes="Bold"/>
+                                    <Label 
+                                        Text="{Binding SelectedShipment.ShipmentValue, StringFormat='${0:N2}'}" 
+                                        TextColor="{DynamicResource ValueLabelTextColor}"
+                                        FontSize="14"
+                                        FontAttributes="Bold"/>
+                                </VerticalStackLayout>
+                                
+                                <!-- Special Requirements -->
+                                <VerticalStackLayout Grid.Row="1" Grid.ColumnSpan="2" Spacing="4">
+                                    <Label 
+                                        Text="Requirements" 
+                                        TextColor="{DynamicResource HeaderLabelTextColor}"
+                                        FontSize="11"
+                                        FontAttributes="Bold"/>
+                                    <StackLayout Orientation="Horizontal" Spacing="8">
+                                        <Border 
+                                            IsVisible="{Binding SelectedShipment.IsFragile}"
+                                            StrokeShape="RoundRectangle 12"
+                                            Padding="8,4">
+                                            <Label 
+                                                Text="Fragile" 
+                                                FontSize="11"
+                                                TextColor="{DynamicResource ThemeErrorColor}"/>
+                                        </Border>
+                                        <Border 
+                                            IsVisible="{Binding SelectedShipment.RequiresSignature}"
+                                            StrokeShape="RoundRectangle 12"
+                                            Padding="8,4">
+                                            <Label 
+                                                Text="Signature Required" 
+                                                FontSize="11"
+                                                TextColor="{DynamicResource ThemePrimaryColor}"/>
+                                        </Border>
+                                    </StackLayout>
+                                </VerticalStackLayout>
+                            </Grid>
+                        </VerticalStackLayout>
+                    </Border>
+                </Grid>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

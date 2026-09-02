@@ -1,0 +1,569 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:syncInput="clr-namespace:Syncfusion.Maui.Inputs;assembly=Syncfusion.Maui.Inputs"
+    xmlns:syncGrid="clr-namespace:Syncfusion.Maui.DataGrid;assembly=Syncfusion.Maui.DataGrid"
+    xmlns:local="clr-namespace:TaskManagement.Pages"
+    x:Class="TaskManagement.Pages.TaskManagementPage"
+    Shell.NavBarIsVisible="{OnPlatform Android=True,iOS=True,WinUI=False}"
+    BackgroundColor="#F5F7FA">
+
+    <ContentPage.Resources>
+
+        <local:PriorityColorConverter
+            x:Key="PriorityColorConverter"/>
+        <local:StatusColorConverter
+            x:Key="StatusColorConverter"/>
+        <local:ProgressColorConverter
+            x:Key="ProgressColorConverter"/>
+
+    </ContentPage.Resources>
+
+    <Grid
+        Padding="20"
+        RowDefinitions="Auto,Auto,Auto,*"
+        RowSpacing="12">
+
+        <!-- HEADER -->
+
+        <Grid
+            Grid.Row="0"
+            ColumnDefinitions="*,Auto">
+
+            <VerticalStackLayout Spacing="2">
+
+                <Label
+                    Text="Task Management"
+                    FontSize="28"
+                    FontAttributes="Bold"
+                    TextColor="#1E293B"/>
+
+                <Label
+                    Text="Manage, track and monitor project tasks"
+                    FontSize="14"
+                    TextColor="#64748B"/>
+
+            </VerticalStackLayout>
+
+            <Button
+                Grid.Column="1"
+                Text="New Task"
+                WidthRequest="150"
+                HeightRequest="45"
+                CornerRadius="22"
+                BackgroundColor="#2563EB"
+                TextColor="White"
+                FontAttributes="Bold"
+                Command="{Binding CreateTaskCommand}"
+                VerticalOptions="Center"/>
+
+        </Grid>
+
+        <!-- KPI CARDS -->
+
+        <Grid
+            Grid.Row="1"
+            IsVisible="{OnIdiom Phone=False, Tablet=True, Desktop=True}"
+            ColumnDefinitions="*,*,*,*"
+            ColumnSpacing="12">
+
+            <!-- Total -->
+
+            <Frame
+                HeightRequest="110"
+                Padding="0"
+                CornerRadius="14"
+                BorderColor="#E5E7EB"
+                BackgroundColor="White">
+
+                <VerticalStackLayout
+                    Padding="16"
+                    VerticalOptions="Center">
+
+                    <Label
+                        Text="📋 Total Tasks"
+                        FontSize="13"
+                        TextColor="#64748B"/>
+
+                    <Label
+                        Text="{Binding Tasks.Count}"
+                        FontSize="32"
+                        TextColor="#64748B"
+                        FontAttributes="Bold"/>
+
+                </VerticalStackLayout>
+
+            </Frame>
+
+            <!-- In Progress -->
+
+            <Frame
+                Grid.Column="1"
+                HeightRequest="110"
+                Padding="0"
+                CornerRadius="14"
+                BorderColor="#E5E7EB"
+                BackgroundColor="White">
+
+                <VerticalStackLayout
+                    Padding="16"
+                    VerticalOptions="Center">
+
+                    <Label
+                        Text="🚀 In Progress"
+                        FontSize="13"
+                        TextColor="#2563EB"/>
+
+                    <Label
+                        Text="{Binding InProgressCount}"
+                        FontSize="32"
+                        FontAttributes="Bold"
+                        TextColor="#2563EB"/>
+
+                </VerticalStackLayout>
+
+            </Frame>
+
+            <!-- Completed -->
+
+            <Frame
+                Grid.Column="2"
+                HeightRequest="110"
+                Padding="0"
+                CornerRadius="14"
+                BorderColor="#E5E7EB"
+                BackgroundColor="White">
+
+                <VerticalStackLayout
+                    Padding="16"
+                    VerticalOptions="Center">
+
+                    <Label
+                        Text="✅ Completed"
+                        FontSize="13"
+                        TextColor="#10B981"/>
+
+                    <Label
+                        Text="{Binding CompletedCount}"
+                        FontSize="32"
+                        FontAttributes="Bold"
+                        TextColor="#10B981"/>
+
+                </VerticalStackLayout>
+
+            </Frame>
+
+            <!-- Overdue -->
+
+            <Frame
+                Grid.Column="3"
+                HeightRequest="110"
+                Padding="0"
+                CornerRadius="14"
+                BorderColor="#E5E7EB"
+                BackgroundColor="White">
+
+                <VerticalStackLayout
+                    Padding="16"
+                    VerticalOptions="Center">
+
+                    <Label
+                        Text="⚠ Overdue"
+                        FontSize="13"
+                        TextColor="#EF4444"/>
+
+                    <Label
+                        Text="{Binding OverdueCount}"
+                        FontSize="32"
+                        FontAttributes="Bold"
+                        TextColor="#EF4444"/>
+
+                </VerticalStackLayout>
+
+            </Frame>
+
+        </Grid>
+
+        <!-- MOBILE KPI CARDS -->
+
+        <Grid
+            Grid.Row="1"
+            IsVisible="{OnIdiom Phone=True, Tablet=False, Desktop=False}"
+            ColumnDefinitions="*,*"
+            RowDefinitions="Auto,Auto"
+            ColumnSpacing="10"
+            RowSpacing="10">
+
+            <!-- Total -->
+
+            <Frame Grid.Row="0"
+                   Grid.Column="0"
+                   Padding="12"
+                   HeightRequest="90"
+                   CornerRadius="14"
+                   BorderColor="#E5E7EB"
+                   BackgroundColor="White">
+
+                <Grid ColumnDefinitions="Auto,*">
+
+                    <Label
+                        Text="📋"
+                        FontSize="18"
+                        VerticalOptions="Center"/>
+
+                    <VerticalStackLayout
+                        Grid.Column="1"
+                        Margin="8,0,0,0"
+                        Spacing="2">
+
+                        <Label
+                            Text="Total Tasks"
+                            FontSize="13"
+                            FontAttributes="Bold"
+                            TextColor="#6B7280"/>
+
+                        <Label
+                            Text="{Binding Tasks.Count}"
+                            FontSize="26"
+                            FontAttributes="Bold"
+                            TextColor="#111827"/>
+
+                    </VerticalStackLayout>
+
+                </Grid>
+
+            </Frame>
+
+            <!-- In Progress -->
+
+            <Frame Grid.Row="0"
+                   Grid.Column="1"
+                   Padding="12"
+                   HeightRequest="90"
+                   CornerRadius="14"
+                   BorderColor="#E5E7EB"
+                   BackgroundColor="White">
+
+                <Grid ColumnDefinitions="Auto,*">
+
+                    <Label
+                        Text="🚀"
+                        FontSize="18"
+                        VerticalOptions="Center"/>
+
+                    <VerticalStackLayout
+                        Grid.Column="1"
+                        Margin="8,0,0,0"
+                        Spacing="2">
+
+                        <Label
+                            Text="In Progress"
+                            FontSize="13"
+                            FontAttributes="Bold"
+                            TextColor="#6B7280"/>
+
+                        <Label
+                            Text="{Binding InProgressCount}"
+                            FontSize="26"
+                            FontAttributes="Bold"
+                            TextColor="#2563EB"/>
+
+                    </VerticalStackLayout>
+
+                </Grid>
+
+            </Frame>
+
+            <!-- Completed -->
+
+            <Frame Grid.Row="1"
+                   Grid.Column="0"
+                   Padding="12"
+                   HeightRequest="90"
+                   CornerRadius="14"
+                   BorderColor="#E5E7EB"
+                   BackgroundColor="White">
+
+                <Grid ColumnDefinitions="Auto,*">
+
+                    <Label
+                        Text="✅"
+                        FontSize="18"
+                        VerticalOptions="Center"/>
+
+                    <VerticalStackLayout
+                        Grid.Column="1"
+                        Margin="8,0,0,0"
+                        Spacing="2">
+
+                        <Label
+                            Text="Completed Tasks"
+                            FontSize="13"
+                            FontAttributes="Bold"
+                            TextColor="#6B7280"/>
+
+                        <Label
+                            Text="{Binding CompletedCount}"
+                            FontSize="26"
+                            FontAttributes="Bold"
+                            TextColor="#10B981"/>
+
+                    </VerticalStackLayout>
+
+                </Grid>
+
+            </Frame>
+
+            <!-- Overdue -->
+
+            <Frame Grid.Row="1"
+                   Grid.Column="1"
+                   Padding="12"
+                   HeightRequest="90"
+                   CornerRadius="14"
+                   BorderColor="#E5E7EB"
+                   BackgroundColor="White">
+
+                <Grid ColumnDefinitions="Auto,*">
+
+                    <Label
+                        Text="⚠️"
+                        FontSize="18"
+                        VerticalOptions="Center"/>
+
+                    <VerticalStackLayout
+                        Grid.Column="1"
+                        Margin="8,0,0,0"
+                        Spacing="2">
+
+                        <Label
+                            Text="Overdue Tasks"
+                            FontSize="13"
+                            FontAttributes="Bold"
+                            TextColor="#6B7280"/>
+
+                        <Label
+                            Text="{Binding OverdueCount}"
+                            FontSize="26"
+                            FontAttributes="Bold"
+                            TextColor="#EF4444"/>
+
+                    </VerticalStackLayout>
+
+                </Grid>
+
+            </Frame>
+
+        </Grid>
+
+        <!-- SEARCH / FILTERS -->
+
+        <Frame
+            Grid.Row="2"
+            CornerRadius="14"
+            BorderColor="#E5E7EB"
+            BackgroundColor="White"
+            Padding="14">
+
+            <VerticalStackLayout Spacing="10">
+
+                <Entry
+                    HeightRequest="44"
+                    Text="{Binding SearchText}"
+                    TextColor="Black"
+                    Placeholder="Search tasks, assignee, project..."
+                    ClearButtonVisibility="WhileEditing"/>
+
+                <Grid
+                    ColumnDefinitions="2*,2*,Auto"
+                    ColumnSpacing="10">
+
+
+                    <syncInput:SfComboBox
+                        Grid.Column="0"
+                        ItemsSource="{Binding Priorities}"
+                        SelectedItem="{Binding SelectedPriority, Mode=TwoWay}"
+                        Placeholder="Priority"/>
+
+                    <syncInput:SfComboBox
+                        Grid.Column="1"
+                        ItemsSource="{Binding Statuses}"
+                        SelectedItem="{Binding SelectedStatus, Mode=TwoWay}"
+                        Placeholder="Status"/>
+
+
+                    <Button
+                        Grid.Column="2"
+                        WidthRequest="100"
+                        HeightRequest="40"
+                        CornerRadius="10"
+                        Text="Clear Filter"
+                        Command="{Binding LoadTasksCommand}"
+                        BackgroundColor="#2563EB"
+                        TextColor="White"/>
+
+                </Grid>
+
+            </VerticalStackLayout>
+
+        </Frame>
+
+        <!-- GRID CONTAINER -->
+
+        <Frame
+            Grid.Row="3"
+            CornerRadius="15"
+            Padding="10"
+            BorderColor="#E5E7EB"
+            HorizontalOptions="Fill"
+            BackgroundColor="White">
+
+            <syncGrid:SfDataGrid
+                ItemsSource="{Binding Tasks}"
+                SelectionMode="SingleDeselect"
+                SortingMode="Multiple"
+                AllowTriStateSorting="True"
+                AutoGenerateColumnsMode="None"
+                ColumnWidthMode="Auto"
+                GridLinesVisibility="{OnIdiom Phone=Both, Tablet=Horizontal, Desktop=Horizontal}"
+                HeaderGridLinesVisibility="{OnIdiom Phone=Both, Tablet=Horizontal, Desktop=Horizontal}"
+                AllowRowHoverHighlighting="True">
+
+                <syncGrid:SfDataGrid.DefaultStyle>
+
+                    <syncGrid:DataGridStyle
+                        HeaderRowBackground="#2D4263"
+                        HeaderRowTextColor="White"
+                        HeaderRowFontAttributes="Bold"
+                        RowBackground="#ECF2F9"
+                        AlternateRowBackground="#C8D9EB"
+                        SortIconColor="White"
+                        RowTextColor="#1E293B"
+                        RowHoveredBackground="#82A6CB"
+                        SelectionBackground="#DBEAFE"
+                        SelectedRowTextColor="#1D4ED8"
+                        CurrentCellBorderColor="#3B82F6"/>
+
+                </syncGrid:SfDataGrid.DefaultStyle>
+
+                <syncGrid:SfDataGrid.Columns>
+
+                    <syncGrid:DataGridTextColumn
+                        MappingName="TaskId"
+                        HeaderText="ID"
+                        Width="70"/>
+
+                    <syncGrid:DataGridTextColumn
+                        MappingName="Title"
+                        HeaderText="Task"
+                        Width="220"/>
+
+                    <syncGrid:DataGridTextColumn
+                        MappingName="ProjectName"
+                        HeaderText="Project"
+                        Width="170"/>
+
+                    <syncGrid:DataGridTextColumn
+                        MappingName="Priority"
+                        HeaderText="Priority"
+                        Width="100">
+
+                        <syncGrid:DataGridTextColumn.CellStyle>
+
+                            <Style TargetType="syncGrid:DataGridCell">
+
+                                <Setter Property="TextColor"
+                                        Value="{Binding Priority,
+                                    Converter={StaticResource PriorityColorConverter}}"/>
+
+                                <Setter Property="FontAttributes"
+                                        Value="Bold"/>
+
+                            </Style>
+
+                        </syncGrid:DataGridTextColumn.CellStyle>
+
+                    </syncGrid:DataGridTextColumn>
+
+                    <syncGrid:DataGridTextColumn
+                        MappingName="Status"
+                        HeaderText="Status"
+                        Width="130">
+
+                        <syncGrid:DataGridTextColumn.CellStyle>
+
+                            <Style TargetType="syncGrid:DataGridCell">
+
+                                <Setter Property="TextColor"
+                                        Value="{Binding Status,
+                                    Converter={StaticResource StatusColorConverter}}"/>
+
+                                <Setter Property="FontAttributes"
+                                        Value="Bold"/>
+
+                            </Style>
+
+                        </syncGrid:DataGridTextColumn.CellStyle>
+
+                    </syncGrid:DataGridTextColumn>
+
+                    <syncGrid:DataGridTextColumn
+                        MappingName="AssignedUser"
+                        HeaderText="Assignee"
+                        Width="170"/>
+
+                    <syncGrid:DataGridTextColumn
+                        MappingName="Team"
+                        HeaderText="Team"
+                        Width="150"/>
+
+                    <syncGrid:DataGridTextColumn
+                        MappingName="DueDate"
+                        HeaderText="Due"
+                        Width="140"
+                        Format="dd-MMM-yyyy"/>
+
+                    <syncGrid:DataGridTextColumn
+                        MappingName="CompletionPercentage"
+                        HeaderText="Progress"
+                        Width="120"
+                        Format="{}{0}%">
+
+                        <syncGrid:DataGridTextColumn.CellStyle>
+
+                            <Style TargetType="syncGrid:DataGridCell">
+
+                                <Setter Property="TextColor"
+                                        Value="{Binding CompletionPercentage,
+                            Converter={StaticResource ProgressColorConverter}}"/>
+
+                                <Setter Property="FontAttributes"
+                                        Value="Bold"/>
+
+                            </Style>
+
+                        </syncGrid:DataGridTextColumn.CellStyle>
+
+                    </syncGrid:DataGridTextColumn>
+
+                    <syncGrid:DataGridTextColumn
+                        MappingName="EstimatedHours"
+                        HeaderText="Est. Hrs"
+                        Width="110"/>
+
+                    <syncGrid:DataGridTextColumn
+                        MappingName="ActualHours"
+                        HeaderText="Actual Hrs"
+                        Width="120"/>
+
+                </syncGrid:SfDataGrid.Columns>
+
+            </syncGrid:SfDataGrid>
+
+        </Frame>
+
+    </Grid>
+
+</ContentPage>

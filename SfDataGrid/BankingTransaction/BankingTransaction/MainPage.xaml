@@ -1,0 +1,226 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:syncfusion="clr-namespace:Syncfusion.Maui.DataGrid;assembly=Syncfusion.Maui.DataGrid"
+             xmlns:viewmodels="clr-namespace:BankingTransaction.ViewModels"
+             xmlns:converters="clr-namespace:BankingTransaction.Converters"
+             x:Class="BankingTransaction.MainPage"
+             x:DataType="viewmodels:TransactionsViewModel"
+             BackgroundColor="{StaticResource AppBackground}">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:TypeToColorConverter x:Key="TypeToColorConverter" />
+            <converters:TypeToBackgroundConverter x:Key="TypeToBackgroundConverter" />
+            <converters:StatusToColorConverter x:Key="StatusToColorConverter" />
+            <converters:StatusToBackgroundConverter x:Key="StatusToBackgroundConverter" />
+            <Color x:Key="AppBackground">#F7F4FA</Color>
+            <Color x:Key="SurfaceColor">#FFFFFF</Color>
+            <Color x:Key="PrimaryText">#1C1B1F</Color>
+            <Color x:Key="SecondaryText">#5F5E66</Color>
+            <Color x:Key="AccentColor">#24389C</Color>
+            <Color x:Key="AccentSoft">#DDE3FF</Color>
+
+            <Style x:Key="SurfaceCardStyle" TargetType="Border">
+                <Setter Property="BackgroundColor" Value="{StaticResource SurfaceColor}" />
+                <Setter Property="Stroke" Value="#E3DFE8" />
+                <Setter Property="StrokeThickness" Value="1" />
+                <Setter Property="StrokeShape">
+                    <Setter.Value>
+                        <RoundRectangle CornerRadius="12" />
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="Padding" Value="14" />
+            </Style>
+
+            <Style x:Key="BalanceCardStyle" TargetType="Border">
+                <Setter Property="BackgroundColor" Value="{StaticResource AccentSoft}" />
+                <Setter Property="Stroke" Value="Transparent" />
+                <Setter Property="StrokeShape">
+                    <Setter.Value>
+                        <RoundRectangle CornerRadius="12" />
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="Padding" Value="12" />
+                <Setter Property="MinimumWidthRequest" Value="220" />
+            </Style>
+
+            <Style x:Key="SearchCardStyle" TargetType="Border">
+                <Setter Property="BackgroundColor" Value="{StaticResource SurfaceColor}" />
+                <Setter Property="Stroke" Value="#E3DFE8" />
+                <Setter Property="StrokeShape">
+                    <Setter.Value>
+                        <RoundRectangle CornerRadius="10" />
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="Padding" Value="10,8" />
+            </Style>
+
+            <Style x:Key="FieldLabelStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="12" />
+                <Setter Property="TextColor" Value="{StaticResource SecondaryText}" />
+                <Setter Property="CharacterSpacing" Value="0.5" />
+            </Style>
+
+            <Style x:Key="FieldValueStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="15" />
+                <Setter Property="TextColor" Value="{StaticResource PrimaryText}" />
+            </Style>
+
+            <Style x:Key="FieldValueAccentStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="15" />
+                <Setter Property="TextColor" Value="{StaticResource AccentColor}" />
+                <Setter Property="FontAttributes" Value="Bold" />
+            </Style>
+
+            <Style x:Key="BalanceValueStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="24" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="TextColor" Value="{StaticResource AccentColor}" />
+            </Style>
+
+                <OnPlatform x:Key="visibility" x:TypeArguments="x:Boolean">
+                    <On Platform="Android, iOS" Value="False" />
+                    <On Platform="WinUI,MacCatalyst" Value="True" />
+                </OnPlatform>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <!-- Main layout -->
+    <Grid x:Name="MainGrid" RowDefinitions="Auto, Auto, *" Padding="20" RowSpacing="16">
+
+        <!-- Desktop Header: Search and Balance -->
+        <Grid x:Name="DesktopHeader" Grid.Row="0" ColumnDefinitions="Auto, *, Auto, Auto" ColumnSpacing="16">
+            <!-- Bank Icon -->
+            <Border BackgroundColor="{StaticResource AccentSoft}" Padding="8" HeightRequest="56" WidthRequest="56" VerticalOptions="Center">
+                <Label Text="🏦" HorizontalOptions="Center" VerticalOptions="Center" FontSize="28" />
+            </Border>
+
+            <!-- Search Bar -->
+            <Border Grid.Column="1" Style="{StaticResource SearchCardStyle}" HeightRequest="56">
+                <Grid ColumnDefinitions="Auto, *" VerticalOptions="Center">
+                    <Label Text="🔍" VerticalOptions="Center" TextColor="{StaticResource SecondaryText}" Margin="8,0" FontSize="16" />
+                    <Entry Grid.Column="1" Placeholder="Search transactions..." Text="{Binding SearchText}" BackgroundColor="Transparent" VerticalOptions="Center" PlaceholderColor="{StaticResource SecondaryText}" />
+                </Grid>
+            </Border>
+
+            <!-- Export Button -->
+            <Button Grid.Column="3" Text="Export" BackgroundColor="{StaticResource AccentColor}" TextColor="White" FontAttributes="Bold" Padding="16,6" FontSize="14" Clicked="ExportButton_Clicked"/>
+
+            <!-- Balance Card -->
+            <Border Style="{StaticResource BalanceCardStyle}" Grid.Column="2" VerticalOptions="Center">
+                <VerticalStackLayout Spacing="4">
+                    <Label Text="Available Balance" Style="{StaticResource FieldLabelStyle}" />
+                    <Label Text="{Binding BalanceText}" Style="{StaticResource BalanceValueStyle}" />
+                </VerticalStackLayout>
+            </Border>
+        </Grid>
+
+        <!-- Mobile Header: Stacked Layout -->
+        <StackLayout x:Name="MobileHeader" Grid.Row="0" Spacing="12">
+            <!-- Title and Balance -->
+            <Border Style="{StaticResource BalanceCardStyle}" HorizontalOptions="Fill">
+                <StackLayout Spacing="8" Orientation="Horizontal">
+                    <Border BackgroundColor="{StaticResource AccentSoft}" Padding="8" HeightRequest="48" WidthRequest="48" VerticalOptions="Center">
+                        <Label Text="🏦" HorizontalOptions="Center" VerticalOptions="Center" FontSize="24" />
+                    </Border>
+                    <StackLayout VerticalOptions="Center" HorizontalOptions="FillAndExpand">
+                        <Label Text="Available Balance" Style="{StaticResource FieldLabelStyle}" />
+                        <Label Text="{Binding BalanceText}" Style="{StaticResource BalanceValueStyle}" FontSize="20" />
+                    </StackLayout>
+                </StackLayout>
+            </Border>
+
+            <!-- Search Bar Mobile -->
+            <Border Style="{StaticResource SearchCardStyle}" HeightRequest="60">
+                <Grid ColumnDefinitions="Auto, *" VerticalOptions="Center">
+                    <Label Text="🔍" VerticalOptions="Center" TextColor="{StaticResource SecondaryText}" Margin="8,0" FontSize="16" />
+                    <Entry Grid.Column="1" Placeholder="Search transactions..." Text="{Binding SearchText}" BackgroundColor="Transparent" VerticalOptions="Center" PlaceholderColor="{StaticResource SecondaryText}" />
+                </Grid>
+            </Border>
+
+            <!-- Export Button Mobile -->
+            <Button Text="Export" BackgroundColor="{StaticResource AccentColor}" TextColor="White" FontAttributes="Bold" Padding="16,8" FontSize="14" Clicked="ExportButton_Clicked" />
+        </StackLayout>
+
+        <!-- Data grid area -->
+        <Border Grid.Row="1" Grid.RowSpan="2" Style="{StaticResource SurfaceCardStyle}" Padding="10">
+            <Grid>
+                <syncfusion:SfDataGrid x:Name="TransactionsGrid"
+                                   ItemsSource="{Binding Transactions}"
+                                   AutoGenerateColumnsMode="None"
+                                   SelectionMode="Single"
+                                   NavigationMode="Row"
+                                   ColumnWidthMode="Fill"
+                                   RowHeight="52"
+                                   GridLinesVisibility="None"
+                                    QueryRowHeight="DataGrid_QueryRowHeight"
+                                   SelectionChanged="OnSelectionChanged"
+                                   HeaderGridLinesVisibility="Horizontal">
+                    <syncfusion:SfDataGrid.DefaultStyle>
+                        <syncfusion:DataGridStyle AlternateRowBackground="#F4F5F7"/>
+                    </syncfusion:SfDataGrid.DefaultStyle>
+                <syncfusion:SfDataGrid.Columns>
+                        <syncfusion:DataGridTextColumn MappingName="FormattedDate" HeaderText="Date" Width="120" />
+                        <syncfusion:DataGridTextColumn MappingName="TransactionId" HeaderText="Transaction ID" Width="140" />
+                        <syncfusion:DataGridTextColumn MappingName="Description" HeaderText="Description" Visible="{StaticResource visibility}" />
+                        <syncfusion:DataGridTextColumn MappingName="Type" HeaderText="Type" Width="105" AllowFiltering="True">
+                            <syncfusion:DataGridTextColumn.CellStyle>
+                                <Style TargetType="syncfusion:DataGridCell">
+                                        <Setter Property="TextColor" Value="{Binding Type, Converter={StaticResource TypeToColorConverter}}" />
+                                        <Setter Property="Background" Value="{Binding Type, Converter={StaticResource TypeToBackgroundConverter}}" />
+                                    </Style>
+                            </syncfusion:DataGridTextColumn.CellStyle>
+                        </syncfusion:DataGridTextColumn>
+                        <syncfusion:DataGridTextColumn MappingName="AmountDisplay" HeaderText="Amount" Width="120" />
+                        <syncfusion:DataGridTextColumn MappingName="Status" HeaderText="Status" Width="105" AllowFiltering="True">
+                            <syncfusion:DataGridTextColumn.CellStyle>
+                                <Style TargetType="syncfusion:DataGridCell">
+                                    <Setter Property="TextColor" Value="{Binding Status, Converter={StaticResource StatusToColorConverter}}" />
+                                    <!--<Setter Property="Background" Value="{Binding Status, Converter={StaticResource StatusToBackgroundConverter}}" />-->
+                                </Style>
+                            </syncfusion:DataGridTextColumn.CellStyle>
+                        </syncfusion:DataGridTextColumn>
+                    </syncfusion:SfDataGrid.Columns>
+                </syncfusion:SfDataGrid>
+            </Grid>
+        </Border>
+
+        <!-- VisualStateManager for responsive layout -->
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="ScreenSizeStates">
+                <!-- Mobile State: Below 800px -->
+                <VisualState x:Name="MobileState">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <!-- Hide desktop header, show mobile header -->
+                        <Setter TargetName="DesktopHeader" Property="IsVisible" Value="False" />
+                        <Setter TargetName="MobileHeader" Property="IsVisible" Value="True" />
+                        <!-- Adjust main grid padding for mobile -->
+                        <Setter TargetName="MainGrid" Property="Padding" Value="12" />
+                        <Setter TargetName="MainGrid" Property="RowSpacing" Value="12" />
+                    </VisualState.Setters>
+                </VisualState>
+
+                <!-- Desktop State: 800px and above -->
+                <VisualState x:Name="DesktopState">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="800" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <!-- Show desktop header, hide mobile header -->
+                        <Setter TargetName="DesktopHeader" Property="IsVisible" Value="True" />
+                        <Setter TargetName="MobileHeader" Property="IsVisible" Value="False" />
+                        <!-- Adjust main grid padding for desktop -->
+                        <Setter TargetName="MainGrid" Property="Padding" Value="20" />
+                        <Setter TargetName="MainGrid" Property="RowSpacing" Value="16" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+    </Grid>
+
+</ContentPage>
